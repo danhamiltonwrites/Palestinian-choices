@@ -60,6 +60,9 @@
   .search .clear { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: 0; background: none; color: #a8a29e; cursor: pointer; padding: 4px; display: none; }
   .search .clear.show { display: block; }
   .counter { font-size: 12px; font-weight: 500; color: var(--muted); white-space: nowrap; margin-left: auto; }
+  .more-link { border: 0; background: none; padding: 0 0 0 6px; font-size: 12px; font-weight: 600; color: var(--c-diplomacy); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+  .btn-ghost { background: none; color: var(--c-all); border: 1px solid var(--line-strong); margin-left: 6px; }
+  .btn-ghost:hover { background: #f1efea; }
   .eras { margin-top: 6px; gap: 2px; }
   .era { border: 0; background: none; padding: 4px 9px; border-radius: 6px; font-size: 12px; font-weight: 500; color: #57534e; white-space: nowrap; cursor: pointer; }
   .era:hover { background: #ebe8e2; color: var(--ink); }
@@ -146,7 +149,7 @@
   <div class="kicker">Historical chronology &bull; 1920&ndash;present</div>
   <h1>Palestinian Choices: Mandate Era to Today</h1>
   <div class="lede">
-    <p>Much commentary on the ideological left, and often in mainstream media, describes the conflict in terms borrowed from Marxist theory: Israel as the oppressor and the Palestinians as the oppressed. In that frame, Palestinian actions appear mainly as “resistance,” a reaction to being oppressed. This document tests that frame against the record. It lists key decisions made over the past century by Palestinian and Arab leaders and their allies, including rejected compromises, maximalist demands, propaganda, war, terrorism and subterfuge. Some entries record choices by Arab states and Iran, because those patrons shaped the options open to Palestinian leaders. This isn’t a full history of the conflict, and Israel’s own record, including the parts that deserve criticism, is a separate subject. The question here is narrower: did Palestinian and Arab leaders have choices, and what did they choose?</p>
+    <p>Much commentary on the ideological left, and often in mainstream media, describes the conflict in terms borrowed from Marxist theory: Israel as the oppressor and the Palestinians as the oppressed. In that frame, Palestinian actions appear mainly as “resistance,” a reaction to being oppressed. This document tests that frame against the record. It lists key decisions made over the past century by Palestinian and Arab leaders and their allies, including rejected compromises, maximalist demands, propaganda, war, terrorism and subterfuge. Those decisions still shape the conflict, and today’s impasse is hard to understand without them. Some entries record choices by Arab states and Iran, because those patrons shaped the options open to Palestinian leaders. This isn’t a full history of the conflict, and Israel’s own record, including the parts that deserve criticism, is a separate subject. The question here is narrower: did Palestinian and Arab leaders have choices, and what did they choose?</p>
   </div>
   <p class="howto">Filter by theme, search any name or place, or jump to a decade. Each entry has a link icon so you can share it directly.</p>
 </header>
@@ -173,8 +176,9 @@
   <div id="timeline"></div>
   <div class="empty" id="empty" hidden>
     <h3>No matching events</h3>
-    <p>Try another category or clear the search.</p>
-    <button class="btn" id="reset" type="button">Reset filters</button>
+    <p id="empty-msg">Try another category or clear the search.</p>
+    <button class="btn" id="show-all" type="button" hidden></button>
+    <button class="btn btn-ghost" id="reset" type="button">Reset filters</button>
   </div>
   <noscript><p>This chronology needs JavaScript to display.</p></noscript>
 </main>
@@ -916,7 +920,8 @@
     if (state.cat !== 'all') p.set('cat', state.cat);
     if (state.q.trim()) p.set('q', state.q.trim());
     const qs = p.toString();
-    history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash);
+    // Some contexts (a file opened from a snapshot or sandboxed preview) refuse address updates; the page still works.
+    try { history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash); } catch (e) { /* ignore */ }
   }
 
   const searchMatches = () => { const q = norm(state.q.trim()); return q ? EVENTS.filter((e) => e._hay.includes(q)) : EVENTS; };
@@ -983,9 +988,21 @@
     const q = state.q.trim();
     renderFilters(base);
     renderEras(list);
-    $('counter').textContent = list.length === EVENTS.length ? `${EVENTS.length} events` : `Showing ${list.length} of ${EVENTS.length}`;
+    // Matches the search found in other categories, which the active category is hiding.
+    const hiddenByCat = state.cat !== 'all' && q ? base.length - list.length : 0;
+    const catName = CATEGORIES[state.cat].label;
+    const plural = (n) => n === 1 ? '1 match' : `${n} matches`;
+    $('counter').innerHTML = (list.length === EVENTS.length ? `${EVENTS.length} events` : `Showing ${list.length} of ${EVENTS.length}`) +
+      (hiddenByCat && list.length ? ` <button type="button" class="more-link" id="more-link">+${hiddenByCat} in other categories</button>` : '');
     $('clear').classList.toggle('show', !!state.q);
     $('empty').hidden = list.length > 0;
+    $('show-all').hidden = !(list.length === 0 && hiddenByCat);
+    if (list.length === 0) {
+      $('empty-msg').textContent = hiddenByCat
+        ? `Nothing in “${catName}” matches “${q}”, but ${plural(hiddenByCat)} in other categories.`
+        : 'Try another category or clear the search.';
+      $('show-all').textContent = `Show all ${plural(hiddenByCat)}`;
+    }
     $('timeline').innerHTML = ERAS.map((era) => {
       const evs = list.filter((e) => e.eraId === era.id);
       if (!evs.length) return '';
@@ -1066,6 +1083,8 @@
   let typing;
   $('q').addEventListener('input', (e) => { state.q = e.target.value; clearTimeout(typing); typing = setTimeout(render, 120); });
   $('clear').addEventListener('click', () => { state.q = ''; $('q').value = ''; render(); $('q').focus(); });
+  $('show-all').addEventListener('click', () => setCategory('all'));
+  $('counter').addEventListener('click', (e) => { if (e.target.id === 'more-link') setCategory('all'); });
   $('reset').addEventListener('click', () => { state.cat = 'all'; state.q = ''; $('q').value = ''; render(); });
   document.addEventListener('keydown', (e) => {
     if (e.key === '/' && document.activeElement !== $('q') && !e.ctrlKey && !e.metaKey) { e.preventDefault(); $('q').focus(); }
