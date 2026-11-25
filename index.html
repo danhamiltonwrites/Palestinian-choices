@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Palestinian Choices: Mandate Era to Today</title>
+<meta name="description" content="An interactive, filterable chronology of decisions by Palestinian and Arab leaders and their allies, 1920 to today.">
+<meta property="og:title" content="Palestinian Choices: Mandate Era to Today">
+<meta property="og:description" content="An interactive, filterable chronology of decisions by Palestinian and Arab leaders and their allies, 1920 to today.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #faf9f6; --card: #ffffff; --ink: #1c1917; --body: #44403c; --muted: #6b645e;
+    --line: #e5e2dc; --line-strong: #d6d1c8; --chip: #f2f0eb; --mark: #fde68a;
+    --c-all: #334155; --c-diplomacy: #1d4ed8; --c-war: #b91c1c; --c-terrorism: #c2410c;
+    --c-propaganda: #6d28d9; --c-regional: #0f766e;
+    --serif: "Newsreader", Georgia, Cambria, "Times New Roman", serif;
+    --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --bar-h: 120px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; line-height: 1.5; }
+  ::selection { background: #fef3c7; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 20px; }
+  button { font: inherit; color: inherit; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* Header */
+  header.intro { padding: 56px 0 32px; }
+  .kicker { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .kicker::before { content: ""; width: 24px; height: 1px; background: #a8a29e; }
+  h1 { font-family: var(--serif); font-size: clamp(30px, 6vw, 48px); line-height: 1.1; letter-spacing: -.01em; margin: 0 0 22px; }
+  .lede { font-family: var(--serif); font-size: clamp(17px, 2.4vw, 20px); line-height: 1.6; color: #44403c; border-left: 2px solid var(--line-strong); padding-left: 20px; margin: 0; }
+  .lede p { margin: 0 0 12px; } .lede p:last-child { margin: 0; }
+  .howto { margin-top: 18px; font-size: 13px; color: var(--muted); }
+
+  /* Sticky control bar */
+  .bar { position: sticky; top: 0; z-index: 30; background: rgba(250,249,246,.95); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+  .bar .wrap { padding-top: 10px; padding-bottom: 8px; }
+  .row { display: flex; align-items: center; gap: 8px; }
+  .scroll-x { overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+  .scroll-x::-webkit-scrollbar { display: none; }
+  .filters { flex-wrap: wrap; }
+  .fbtn { --c: var(--c-all); display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--c); font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: background .15s, border-color .15s; }
+  .fbtn:hover { border-color: var(--c); }
+  .fbtn[aria-pressed="true"] { background: var(--c); border-color: var(--c); color: #fff; }
+  .fbtn .n { font-size: 11px; font-weight: 600; line-height: 1; padding: 3px 6px; border-radius: 99px; background: var(--chip); color: #57534e; }
+  .fbtn[aria-pressed="true"] .n { background: rgba(255,255,255,.22); color: #fff; }
+  .fbtn:disabled { opacity: .45; cursor: default; }
+  .ico { width: 14px; height: 14px; flex: none; }
+  .row2 { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(229,226,220,.7); gap: 10px; }
+  .search { position: relative; flex: 1 1 260px; max-width: 360px; }
+  .search svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: #a8a29e; pointer-events: none; }
+  .search input { width: 100%; padding: 7px 30px 7px 32px; font: 14px var(--sans); background: var(--card); border: 1px solid var(--line); border-radius: 8px; color: var(--ink); }
+  .search input:focus, .fbtn:focus-visible, .era:focus-visible, .chip:focus-visible, .icon-btn:focus-visible { outline: 2px solid #a8a29e; outline-offset: 1px; }
+  .search .clear { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: 0; background: none; color: #a8a29e; cursor: pointer; padding: 4px; display: none; }
+  .search .clear.show { display: block; }
+  .counter { font-size: 12px; font-weight: 500; color: var(--muted); white-space: nowrap; margin-left: auto; }
+  .eras { margin-top: 6px; gap: 2px; }
+  .era { border: 0; background: none; padding: 4px 9px; border-radius: 6px; font-size: 12px; font-weight: 500; color: #57534e; white-space: nowrap; cursor: pointer; }
+  .era:hover { background: #ebe8e2; color: var(--ink); }
+  .era.current { background: var(--ink); color: #fff; }
+  .era:disabled { color: #d6d3d1; cursor: default; background: none; }
+
+  /* Timeline */
+  main { padding: 40px 0 48px; }
+  section.era-sec { margin-bottom: 48px; scroll-margin-top: calc(var(--bar-h) + 16px); }
+  .era-head { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  .era-head::before, .era-head::after { content: ""; height: 1px; flex: 1; background: var(--line); }
+  .era-head h2 { font-family: var(--serif); font-size: clamp(17px, 2.4vw, 20px); font-weight: 700; text-align: center; margin: 0; padding: 4px 14px; background: #f1efea; border: 1px solid var(--line); border-radius: 99px; max-width: 80%; }
+  .spine { border-left: 2px solid #d6d3d1; margin-left: 10px; }
+  article.ev { position: relative; padding: 0 0 28px 30px; scroll-margin-top: calc(var(--bar-h) + 16px); }
+  article.ev:last-child { padding-bottom: 4px; }
+  .node { position: absolute; left: -7px; top: 26px; width: 12px; height: 12px; border-radius: 50%; box-shadow: 0 0 0 4px var(--paper); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; box-shadow: 0 1px 2px rgba(0,0,0,.03); transition: box-shadow .15s, border-color .15s; }
+  .card:hover { border-color: var(--line-strong); box-shadow: 0 4px 14px rgba(0,0,0,.06); }
+  article.ev.flash .card { animation: flash 1.6s ease-out; }
+  @keyframes flash { 0% { box-shadow: 0 0 0 3px #fbbf24; } 100% { box-shadow: 0 0 0 3px transparent; } }
+  .card-top { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+  .date { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #57534e; background: var(--chip); border: 1px solid rgba(229,226,220,.7); padding: 4px 10px; border-radius: 6px; }
+  .chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  .chip { --c: var(--c-all); display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 500; color: var(--c); background: color-mix(in srgb, var(--c) 7%, white); border: 1px solid color-mix(in srgb, var(--c) 25%, white); cursor: pointer; }
+  .chip:hover { background: color-mix(in srgb, var(--c) 14%, white); }
+  .chip .ico { width: 12px; height: 12px; }
+  .icon-btn { border: 1px solid transparent; background: none; color: #a8a29e; padding: 3px; border-radius: 6px; cursor: pointer; display: inline-flex; }
+  .icon-btn:hover { color: var(--ink); border-color: var(--line); }
+  .icon-btn svg { width: 14px; height: 14px; }
+  h3 { font-family: var(--serif); font-size: clamp(19px, 2.6vw, 22px); line-height: 1.3; margin: 0 0 8px; }
+  .body { font-size: 15px; color: var(--body); line-height: 1.65; margin: 0; }
+  ul.bul { margin: 12px 0 0; padding-left: 20px; font-size: 15px; color: var(--body); line-height: 1.6; }
+  ul.bul li { margin-bottom: 4px; }
+  .quotes { margin-top: 14px; display: grid; gap: 10px; }
+  blockquote { margin: 0; background: var(--paper); border-left: 3px solid #a8a29e; border-radius: 0 8px 8px 0; padding: 12px 16px; }
+  blockquote p { margin: 0; font-family: var(--serif); font-style: italic; font-size: 16px; color: #292524; line-height: 1.55; }
+  blockquote.para { border-left-style: dashed; }
+  blockquote.para p { font-style: normal; font-family: var(--sans); font-size: 14.5px; color: var(--body); }
+  blockquote footer { margin-top: 4px; font-size: 12px; font-weight: 500; color: var(--muted); }
+  .tag-para { display: inline-block; margin-left: 6px; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: #a8a29e; }
+  details.src { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 10px; font-size: 13px; color: var(--muted); }
+  details.src summary { cursor: pointer; font-weight: 600; }
+  details.src ol { margin: 8px 0 0; padding-left: 20px; }
+  details.src a { color: var(--c-diplomacy); }
+  mark { background: var(--mark); color: inherit; padding: 0 1px; border-radius: 2px; }
+
+  .empty { text-align: center; padding: 56px 24px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+  .empty h3 { margin-bottom: 4px; }
+  .empty p { font-size: 14px; color: var(--muted); margin: 0 0 18px; }
+  .btn { border: 0; background: var(--c-all); color: #fff; font-size: 14px; font-weight: 500; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+  .btn:hover { background: #1e293b; }
+
+  footer.page { border-top: 1px solid var(--line); padding: 32px 0 48px; font-size: 12px; color: var(--muted); }
+  .totop { position: fixed; right: 20px; bottom: 20px; z-index: 40; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--card); box-shadow: 0 2px 8px rgba(0,0,0,.1); color: #57534e; cursor: pointer; display: none; align-items: center; justify-content: center; }
+  .totop.show { display: flex; }
+  .totop svg { width: 16px; height: 16px; }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; font-size: 13px; padding: 8px 14px; border-radius: 8px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 50; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 640px) {
+    header.intro { padding: 36px 0 24px; }
+    .filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+    .filters::-webkit-scrollbar { display: none; }
+    .fbtn .lbl-long { display: none; }
+    .fbtn .lbl-short { display: inline; }
+    .card { padding: 16px; }
+    article.ev { padding-left: 22px; }
+    .search { max-width: none; }
+  }
+  @media (min-width: 641px) { .fbtn .lbl-short { display: none; } }
+
+  @media print {
+    .bar, .totop, .toast, .icon-btn, .howto { display: none !important; }
+    body { background: #fff; }
+    .card { box-shadow: none; break-inside: avoid; }
+    details.src { display: block; } details.src > * { display: block; }
+    section.era-sec { break-before: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="intro wrap">
+  <div class="kicker">Historical chronology &bull; 1920&ndash;present</div>
+  <h1>Palestinian Choices: Mandate Era to Today</h1>
+  <div class="lede">
+    <p>Much commentary on the ideological left, and often in mainstream media, describes the conflict in terms borrowed from Marxist theory: Israel as the oppressor and the Palestinians as the oppressed. In that frame, Palestinian actions appear mainly as “resistance,” a reaction to being oppressed. This document tests that frame against the record. It lists key decisions made over the past century by Palestinian and Arab leaders and their allies, including rejected compromises, maximalist demands, propaganda, war, terrorism and subterfuge. Some entries record choices by Arab states and Iran, because those patrons shaped the options open to Palestinian leaders. This isn’t a full history of the conflict, and Israel’s own record, including the parts that deserve criticism, is a separate subject. The question here is narrower: did Palestinian and Arab leaders have choices, and what did they choose?</p>
+  </div>
+  <p class="howto">Filter by theme, search any name or place, or jump to a decade. Each entry has a link icon so you can share it directly.</p>
+</header>
+
+<div class="bar" id="bar">
+  <div class="wrap">
+    <div class="row filters" id="filters" role="group" aria-label="Filter by category"></div>
+    <div class="row row2">
+      <label class="search">
+        <span class="sr-only">Search events</span>
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="q" type="search" autocomplete="off" placeholder="Search (Jordan, Hamas, Oslo, UN...)  Press / to focus">
+        <button class="clear" id="clear" type="button" aria-label="Clear search">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </label>
+      <div class="counter" id="counter" aria-live="polite"></div>
+    </div>
+    <nav class="row eras scroll-x" id="eras" aria-label="Jump to era"></nav>
+  </div>
+</div>
+
+<main class="wrap">
+  <div id="timeline"></div>
+  <div class="empty" id="empty" hidden>
+    <h3>No matching events</h3>
+    <p>Try another category or clear the search.</p>
+    <button class="btn" id="reset" type="button">Reset filters</button>
+  </div>
+  <noscript><p>This chronology needs JavaScript to display.</p></noscript>
+</main>
+
+<footer class="page wrap">
+  Palestinian Choices: Mandate Era to Today &bull; Interactive chronology. Click a tag on any entry to show only that theme.
+</footer>
+
+<button class="totop" id="totop" type="button" aria-label="Back to top">
+  <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></svg>
+</button>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+  'use strict';
+
+  const ICON = {
+    all: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>',
+    diplomacy: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9.5" y1="12.5" x2="14.5" y2="17.5"/><line x1="14.5" y1="12.5" x2="9.5" y2="17.5"/>',
+    war: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+    terrorism: '<circle cx="12" cy="12" r="9"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/>',
+    propaganda: '<path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>',
+    regional: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>'
+  };
+  const icon = (k) => `<svg class="ico" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">${ICON[k]}</svg>`;
+  const LINK_ICON = '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1 1"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1-1"/></svg>';
+
+  const CATEGORIES = {
+    all:        { label: 'All events',               short: 'All',        color: 'var(--c-all)' },
+    diplomacy:  { label: 'Diplomacy & Rejections',   short: 'Diplomacy',  color: 'var(--c-diplomacy)' },
+    war:        { label: 'War & Military',           short: 'War',        color: 'var(--c-war)' },
+    terrorism:  { label: 'Terrorism & Militancy',    short: 'Terrorism',  color: 'var(--c-terrorism)' },
+    propaganda: { label: 'Propaganda & Subterfuge',  short: 'Propaganda', color: 'var(--c-propaganda)' },
+    regional:   { label: 'Regional Destabilization', short: 'Regional',   color: 'var(--c-regional)' }
+  };
+  const CAT_KEYS = Object.keys(CATEGORIES);
+
+    /**
+     * Eras Metadata
+     */
+    const ERAS = [
+      { id: 'era-1', short: 'Mandate Era', title: 'Mandate Era (1920s–1947): Pre-State Violence and Rejected Proposals' },
+      { id: 'era-2', short: '1947–49', title: '1947–1949: Partition and the 1948 War' },
+      { id: 'era-3', short: '1950s', title: '1950s: Fedayeen, Assassination, and Suez' },
+      { id: 'era-4', short: '1960s', title: '1960s: The PLO and the Six-Day War' },
+      { id: 'era-5', short: '1970s', title: '1970s: Jordan, Lebanon and Global Terror' },
+      { id: 'era-6', short: '1980s', title: '1980s: Europe, Lebanon and Hamas' },
+      { id: 'era-7', short: '1990s', title: '1990s: Oslo and Its Enemies' },
+      { id: 'era-8', short: '2000s', title: '2000s: Second Intifada, Withdrawal and Rejected Offers' },
+      { id: 'era-9', short: '2010s', title: '2010s: Rocket Wars, Lone Attackers and Payments' },
+      { id: 'era-10', short: '2020s', title: '2020s: Abraham Accords, Multi-Front Escalation, and October 7' }
+    ];
+
+    /**
+     * Complete Dataset of All 50 Chronological Entries
+     */
+    const EVENTS = [
+      {
+        "id": 1,
+        "eraId": "era-1",
+        "date": "1920–1939",
+        "title": "Riots and the Arab Revolt",
+        "categories": [
+          "terrorism",
+          "war"
+        ],
+        "body": "Anti-Jewish riots and massacres break out in Jerusalem (1920), Jaffa (1921), and Hebron and Safed (1929). The 1929 riots alone kill 133 Jews, 67 of them in Hebron, where many other Jews survive because Arab neighbors hide them. From 1936 to 1939, the Arab Higher Committee leads an armed revolt against British rule and Jewish immigration."
+      },
+      {
+        "id": 2,
+        "eraId": "era-1",
+        "date": "1937–1939",
+        "title": "Peel Commission and White Paper rejections",
+        "categories": [
+          "diplomacy"
+        ],
+        "body": "The Arab Higher Committee rejects the 1937 British Peel Commission partition plan, which proposed a small Jewish state on roughly 20% of the land. (The Zionist Congress was itself divided: it accepted partition in principle but rejected the proposed borders.) The Committee also rejects the 1939 British White Paper, which capped Jewish immigration on the eve of the Holocaust and promised an independent Arab-majority state within ten years."
+      },
+      {
+        "id": 3,
+        "eraId": "era-1",
+        "date": "1941–1945",
+        "title": "Axis alliance",
+        "categories": [
+          "propaganda",
+          "war"
+        ],
+        "body": "Grand Mufti of Jerusalem and Arab Higher Committee leader Haj Amin al-Husseini backs a pro-Axis coup in Iraq in 1941, then spends the rest of World War II in Berlin collaborating with Nazi Germany. He broadcasts pro-Axis propaganda to the Arab world and helps recruit Bosnian Muslims into the Waffen-SS, including its 13th “Handschar” division."
+      },
+      {
+        "id": 4,
+        "eraId": "era-2",
+        "date": "Aug–Sep 1947",
+        "title": "UNSCOP",
+        "categories": [
+          "diplomacy"
+        ],
+        "body": "The Arab Higher Committee boycotts the UN Special Committee on Palestine, which is weighing partition and a minority plan for a federal state. The Committee demands a single Arab state that grants citizenship only to Jews who lived there before 1917 and their descendants. That would have left about 80–85% of Palestine's roughly 608,000–630,000 Jews, some 500,000–530,000 people including Holocaust survivors, without citizenship."
+      },
+      {
+        "id": 5,
+        "eraId": "era-2",
+        "date": "Sep–Nov 1947",
+        "title": "Last compromise attempt and Resolution 181",
+        "categories": [
+          "diplomacy",
+          "war"
+        ],
+        "body": "Britain had already split off Transjordan, 77% of the Mandate, in 1921–22, and Jewish settlement there was barred. In September, Jewish Agency envoys Abba Eban and David Horowitz meet Arab League chief Azzam Pasha in London to look for a compromise. He tells them the dispute can only be settled by force. On November 29 the UN adopts Resolution 181, the partition plan. Jewish leaders accept it, Arab leaders reject it, and civil war begins.",
+        "quotes": [
+          {
+            "text": "The dispute is “soluble only by the force of arms.”",
+            "attribution": "Azzam Pasha to Jewish Agency envoys, London, September 1947"
+          },
+          {
+            "text": "“A war of extermination and momentous massacre.”",
+            "attribution": "Azzam Pasha, interview in Akhbar al-Yom (Egypt), October 1947"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "eraId": "era-2",
+        "date": "May 1948",
+        "title": "Meir–Abdullah meeting and invasion",
+        "categories": [
+          "war",
+          "diplomacy"
+        ],
+        "body": "Days before the British Mandate ends, Golda Meir meets King Abdullah I secretly in Amman to try to avert war. He declines, citing pressure from the Arab coalition. Hours after Israel declares independence on May 14, the armies of Egypt, Transjordan, Syria, Lebanon and Iraq invade—though divided by competing ambitions, as King Abdullah seeks to annex the West Bank rather than establish a Palestinian state. Israel repels them and captures more land in the process."
+      },
+      {
+        "id": 7,
+        "eraId": "era-2",
+        "date": "1948–1967",
+        "title": "Armistice, Arab rule, and economic boycott",
+        "categories": [
+          "diplomacy",
+          "regional"
+        ],
+        "body": "Jordan holds the West Bank and East Jerusalem and annexes them in 1950. Egypt controls Gaza. Neither creates a Palestinian state. During the 1948 war, the Jewish communities in the areas Jordan captures are destroyed or emptied, including the Old City’s Jewish Quarter, the Etzion bloc, Atarot and Neve Yaakov. Israel’s Foreign Ministry puts the number of Jews killed or driven out of the West Bank and Gaza at over 10,000. A 1967 Israeli government report found 56 of the Old City’s 58 synagogues destroyed, including the historic Hurva and Tiferet Yisrael. Jewish cemeteries are desecrated, and Jews are barred from the Western Wall, although the 1949 armistice provided for access to the holy places. About 700,000 Palestinians flee or are expelled, and about 800,000 Jews are later displaced from Arab and Muslim lands, including Iraq, Syria and Yemen. Meanwhile, the Arab League extends the boycott it declared in 1945 into a primary, secondary and tertiary boycott that blacklists international firms that trade with Israel."
+      },
+      {
+        "id": 8,
+        "eraId": "era-3",
+        "date": "Jul 1951",
+        "title": "King Abdullah I assassinated",
+        "categories": [
+          "terrorism",
+          "regional"
+        ],
+        "body": "A Palestinian gunman assassinates Jordan's King Abdullah I at the Al-Aqsa Mosque in Jerusalem. The plotters are linked to associates of the former Mufti, and the killing is widely attributed to anger at Abdullah's secret contacts with Israel."
+      },
+      {
+        "id": 9,
+        "eraId": "era-3",
+        "date": "1949–1956",
+        "title": "Infiltration and fedayeen raids",
+        "categories": [
+          "terrorism"
+        ],
+        "body": "Thousands of infiltrators cross from Jordan and Egypt each year. Historian Benny Morris finds that most are refugees returning to harvest, graze or steal, but a significant minority carry out attacks: shootings, road and rail mining, pipeline sabotage and ambushes. Israel answers with reprisal raids, including Qibya in 1953. From 1955, Egyptian intelligence organizes and arms fedayeen squads in Gaza for deadly raids inside Israel, including the 1956 attack on a synagogue school at Shafrir (Kfar Chabad) that kills five children and a teacher."
+      },
+      {
+        "id": 10,
+        "eraId": "era-3",
+        "date": "1956",
+        "title": "Suez",
+        "categories": [
+          "war"
+        ],
+        "body": "Egypt has barred Israeli shipping from the Suez Canal since 1949 and ignored UN Security Council Resolution 95 (1951), which called on it to stop. In 1956 Egypt nationalizes the canal, blockades the Straits of Tiran and steps up fedayeen raids. Israel then takes Sinai and Gaza alongside Britain and France. It withdraws in 1957, and UN peacekeepers keep the southern border mostly quiet for a decade."
+      },
+      {
+        "id": 11,
+        "eraId": "era-4",
+        "date": "May 1964",
+        "title": "PLO founded",
+        "categories": [
+          "diplomacy",
+          "propaganda"
+        ],
+        "body": "The Arab League creates the PLO under Ahmad Shukeiri. Its charter calls Israel's establishment \"illegal and null and void.\" In Article 24 it disclaims sovereignty over the Jordanian-held West Bank and Egyptian-held Gaza, and claims them only after Israel captures them in 1967."
+      },
+      {
+        "id": 12,
+        "eraId": "era-4",
+        "date": "Jan 1, 1965",
+        "title": "Fatah's first attack",
+        "categories": [
+          "terrorism"
+        ],
+        "body": "Yasser Arafat's Fatah, operating as al-Asifah, crosses from Lebanon and tries to bomb Israel's National Water Carrier at Eilabun. Regular raids and mining attacks from Jordan, Syria and Lebanon follow."
+      },
+      {
+        "id": 13,
+        "eraId": "era-4",
+        "date": "May–Jun 1967",
+        "title": "Six-Day War",
+        "categories": [
+          "war"
+        ],
+        "body": "Egypt expels UN peacekeepers, closes the Straits of Tiran and threatens to destroy Israel. Israel strikes first. It sends King Hussein a message through the UN urging Jordan to stay out, but Jordan opens fire on Jerusalem. Israel takes Sinai and Gaza, the West Bank and East Jerusalem, and the Golan Heights."
+      },
+      {
+        "id": 14,
+        "eraId": "era-4",
+        "date": "Jun–Nov 1967",
+        "title": "Land for peace, Khartoum and Resolution 242",
+        "categories": [
+          "diplomacy"
+        ],
+        "body": "On June 19, Israel's cabinet votes to return Sinai and the Golan in exchange for full peace and demilitarization, and tells Washington. On September 1, the Arab League's Khartoum summit issues its rejectionist resolution. In November, UN Security Council Resolution 242 sets out the land-for-peace formula. Egypt and Jordan accept it; Syria and the PLO reject it.",
+        "quotes": [
+          {
+            "text": "\"No peace with Israel, no recognition of Israel, no negotiations with it.\"",
+            "attribution": "The \"Three Nos\" — Arab League Khartoum Resolution, September 1, 1967"
+          }
+        ]
+      },
+      {
+        "id": 15,
+        "eraId": "era-4",
+        "date": "Late 1960s",
+        "title": "Soviet-bloc backing",
+        "categories": [
+          "propaganda",
+          "regional"
+        ],
+        "body": "After 1967, the KGB and Eastern Bloc services fund, arm and train Fatah operatives. Romanian defector Ion Mihai Pacepa later claimed the KGB cultivated Arafat personally."
+      },
+      {
+        "id": 16,
+        "eraId": "era-4",
+        "date": "Jul 1968",
+        "title": "Hijackings begin",
+        "categories": [
+          "terrorism"
+        ],
+        "body": "The PFLP hijacks El Al Flight 426 from Rome to Tel Aviv and diverts it to Algiers. A global hijacking campaign follows."
+      },
+      {
+        "id": 17,
+        "eraId": "era-4",
+        "date": "Late 1960s",
+        "title": "PLO destabilizes Jordan",
+        "categories": [
+          "regional"
+        ],
+        "body": "The PLO builds a \"state within a state\" in Jordan, bypassing Jordanian law with its own checkpoints and taxation, as well as extortion and robbery."
+      },
+      {
+        "id": 18,
+        "eraId": "era-4",
+        "date": "1969",
+        "title": "Egypt presses Lebanon to grant the PLO autonomy",
+        "categories": [
+          "regional",
+          "diplomacy"
+        ],
+        "body": "The Cairo Agreement, a secret pact brokered by Nasser, pushes Lebanon to cede control over parts of its territory to the PLO."
+      },
+      {
+        "id": 19,
+        "eraId": "era-5",
+        "date": "Sep 1970",
+        "title": "Black September",
+        "categories": [
+          "regional",
+          "terrorism"
+        ],
+        "body": "PFLP hijackings, including the blowing up of three emptied Western jets at Dawson's Field, and two assassination attempts on King Hussein. Jordan's army crushes the PLO and expels it by July 1971. The PLO leadership and its fighters move to southern Lebanon (\"Fatahland\"). The PLO repeats its \"state within a state\" strategy in Lebanon, which becomes one of the main causes of Lebanon's 1975 civil war."
+      },
+      {
+        "id": 20,
+        "eraId": "era-5",
+        "date": "1972",
+        "title": "Lod and Munich",
+        "categories": [
+          "terrorism"
+        ],
+        "body": "In May, Japanese Red Army gunmen recruited by the PFLP kill 26 people at Lod Airport. In September, Black September, a covert Fatah unit directed by Arafat's deputy Abu Iyad, murders 11 Israeli athletes and coaches at the Munich Olympics. Munich planner Abu Daoud alleged in his memoir that Mahmoud Abbas, then a senior Fatah finance official and later PA president, supplied the money. Abbas has denied knowing the funds were for the attack."
+      },
+      {
+        "id": 21,
+        "eraId": "era-5",
+        "date": "Oct 1973",
+        "title": "Yom Kippur War and oil embargo",
+        "categories": [
+          "war",
+          "diplomacy"
+        ],
+        "body": "Egypt and Syria launch a surprise attack on Yom Kippur, and Israel drives back both armies. Arab oil producers impose an embargo on nations supporting Israel to force diplomatic pressure. The war leads to the 1979 Egypt–Israel peace treaty."
+      },
+      {
+        "id": 22,
+        "eraId": "era-5",
+        "date": "Jun 1974",
+        "title": "The “Phased Plan”",
+        "categories": [
+          "diplomacy",
+          "propaganda"
+        ],
+        "body": "The Palestine National Council adopts a Ten-Point Program. It calls for a fighting national authority to be set up \"on every part of Palestinian territory that is liberated,\" as a step toward liberating all of Palestine. Israeli leaders call it the Phased Plan and read it as a strategy for taking the land in stages."
+      },
+      {
+        "id": 23,
+        "eraId": "era-5",
+        "date": "1974–1979",
+        "title": "Raids from Lebanon, UN Resolution 3379, and Entebbe",
+        "categories": [
+          "terrorism",
+          "propaganda"
+        ],
+        "body": "Palestinian factions based in southern Lebanon carry out hostage raids and massacres inside Israel: Kiryat Shmona and Ma'alot (1974), the Savoy Hotel (1975) and the Coastal Road massacre (1978, 38 civilians killed). In November 1975, Arab states and the Soviet bloc push through UN General Assembly Resolution 3379, which declares Zionism \"a form of racism\" (revoked in 1991). In 1976, Palestinian and German hijackers divert an Air France jet to Entebbe, Uganda, where they separate the Israeli and Jewish passengers from the others."
+      },
+      {
+        "id": 24,
+        "eraId": "era-5",
+        "date": "Sep 1978–1979",
+        "title": "Camp David autonomy plan rejected",
+        "categories": [
+          "diplomacy",
+          "regional"
+        ],
+        "body": "The Camp David Accords include a framework for Palestinian self-government in the West Bank and Gaza during a five-year transition, followed by talks on final status. The PLO rejects it. At a November 1978 summit in Baghdad, Arab states and the PLO agree to punish Egypt. After the 1979 peace treaty, the Arab League suspends Egypt for ten years and moves its headquarters from Cairo to Tunis."
+      },
+      {
+        "id": 25,
+        "eraId": "era-6",
+        "date": "1980–1985",
+        "title": "Attacks abroad",
+        "categories": [
+          "terrorism"
+        ],
+        "body": "Palestinian factions, including the Abu Nidal Organization and the PLF, strike Jewish and Israeli targets in Europe and the Mediterranean:",
+        "bullets": [
+          "The Rue Copernic synagogue bombing in Paris (1980). In 2023 a French court convicted Ottawa academic Hassan Diab in absentia as a member of a PFLP splinter group. Diab denies involvement and remains in Canada.",
+          "The Great Synagogue of Rome attack (1982)",
+          "The Achille Lauro hijacking (1985) by the PLF, whose leader Abu Abbas sits on the PLO Executive Committee. Wheelchair-bound American Jewish passenger Leon Klinghoffer is shot and thrown overboard.",
+          "Gun-and-grenade attacks on El Al counters at the Rome and Vienna airports (1985)"
+        ]
+      },
+      {
+        "id": 26,
+        "eraId": "era-6",
+        "date": "1982",
+        "title": "Mahmoud Abbas's doctoral dissertation and Holocaust denial",
+        "categories": [
+          "propaganda"
+        ],
+        "body": "Abbas earns the Soviet equivalent of a PhD with a dissertation, later published as a book, that questions the established figure of six million Jewish victims of the Holocaust and suggests the number could have been fewer than a million. He alleges that Zionist leaders collaborated with the Nazis and inflated the death toll to gain international sympathy. A 1983 entry in KGB files copied by archivist Vasili Mitrokhin, identified in 2016 by Israeli researchers Isabella Ginor and Gideon Remez, lists Abbas as a KGB agent in Damascus. It doesn't say when or how he was recruited, and Palestinian officials dismissed the report as a smear."
+      },
+      {
+        "id": 27,
+        "eraId": "era-6",
+        "date": "Jun 1982",
+        "title": "First Lebanon War",
+        "categories": [
+          "war",
+          "regional"
+        ],
+        "body": "After nearly a year of a US-brokered ceasefire along the border, the Abu Nidal Organization, a PLO rival, shoots Israel's ambassador in London. Israel strikes PLO targets in Lebanon, the PLO shells northern Israel, and Israel invades, forcing the PLO leadership out to Tunisia."
+      },
+      {
+        "id": 28,
+        "eraId": "era-6",
+        "date": "1982–1985",
+        "title": "Hezbollah",
+        "categories": [
+          "terrorism",
+          "regional"
+        ],
+        "body": "Iran's IRGC builds Hezbollah in Lebanon. The group carries out major suicide bombings against US, French and Israeli targets, and its 1985 manifesto calls for Israel's obliteration."
+      },
+      {
+        "id": 29,
+        "eraId": "era-6",
+        "date": "Dec 1987",
+        "title": "First Intifada and Hamas",
+        "categories": [
+          "terrorism",
+          "diplomacy"
+        ],
+        "body": "A mass uprising breaks out in Gaza and the West Bank. Sheikh Ahmed Yassin founds Hamas. Its 1988 charter calls for Israel's destruction, and its Article 13 rejects peace initiatives and international conferences as contrary to the movement's principles."
+      },
+      {
+        "id": 30,
+        "eraId": "era-6",
+        "date": "Nov 1988–Jun 1990",
+        "title": "PLO shift, and its test",
+        "categories": [
+          "diplomacy",
+          "propaganda"
+        ],
+        "body": "At Algiers, the PLO declares a state and accepts UN Resolution 242. In Geneva in December, Arafat renounces terrorism, which opens talks with the US. The test comes in May 1990, when the Palestine Liberation Front, a PLO faction led by Executive Committee member Abu Abbas, attempts a seaborne raid on Israel's beaches. The PLO refuses to condemn the raid or discipline Abu Abbas, and the US suspends the dialogue."
+      },
+      {
+        "id": 31,
+        "eraId": "era-7",
+        "date": "Aug 1990–1991",
+        "title": "PLO backs Saddam",
+        "categories": [
+          "regional",
+          "diplomacy"
+        ],
+        "body": "When Iraq invades Kuwait, Arafat's PLO sides with Saddam Hussein, though some PLO factions and offices disagree. Kuwait had about 400,000 Palestinian residents before the invasion. After liberation, Kuwait expels or pressures out most of the roughly 200,000 who remain. In 2004 Mahmoud Abbas apologizes to Kuwait for the PLO's stance."
+      },
+      {
+        "id": 32,
+        "eraId": "era-7",
+        "date": "1992 and 1994",
+        "title": "Buenos Aires",
+        "categories": [
+          "terrorism"
+        ],
+        "body": "Hezbollah and Iranian operatives bomb the Israeli Embassy (29 killed) and the AMIA Jewish community center (85 killed)."
+      },
+      {
+        "id": 33,
+        "eraId": "era-7",
+        "date": "Sep 1993",
+        "title": "Oslo Accords",
+        "categories": [
+          "diplomacy"
+        ],
+        "body": "Rabin and Arafat sign the Declaration of Principles. The PLO recognizes Israel and renounces violence. Israel recognizes the PLO and agrees to self-rule under a new Palestinian Authority (PA)."
+      },
+      {
+        "id": 34,
+        "eraId": "era-7",
+        "date": "Oct 1993",
+        "title": "Philadelphia meeting",
+        "categories": [
+          "propaganda"
+        ],
+        "body": "Senior Hamas and Muslim Brotherhood figures meet secretly in Philadelphia, recorded by the FBI. They plan how to derail Oslo and how to hide US fundraising behind charities. The recordings later become evidence in the 2008 Holy Land Foundation trial, which ends in convictions for funding Hamas."
+      },
+      {
+        "id": 35,
+        "eraId": "era-7",
+        "date": "May 1994",
+        "title": "Johannesburg speech",
+        "categories": [
+          "propaganda"
+        ],
+        "body": "In a secretly recorded talk at a Johannesburg mosque, Arafat compares the Oslo Accords to Muhammad's temporary Treaty of Hudaybiyyah.",
+        "quotes": [
+          {
+            "text": "\"The jihad will continue\" to free Jerusalem.",
+            "attribution": "Yasser Arafat, Johannesburg Mosque, May 1994"
+          }
+        ]
+      },
+      {
+        "id": 36,
+        "eraId": "era-7",
+        "date": "1994–1996",
+        "title": "Suicide bombings and PA incitement",
+        "categories": [
+          "terrorism",
+          "propaganda"
+        ],
+        "body": "Hamas and Palestinian Islamic Jihad (PIJ) bomb buses in Israeli cities. A wave in early 1996, months after an Israeli extremist murdered Rabin, erodes Israeli faith in Oslo and helps elect Benjamin Netanyahu. Meanwhile, PA-run media and children's programming glorify attackers and promote antisemitic tropes. When the PA introduces its own school textbooks from 2000, studies, including one commissioned by the European Union (Georg Eckert Institute, 2021), find antisemitic narratives and glorification of violence in parts of the curriculum."
+      },
+      {
+        "id": 37,
+        "eraId": "era-8",
+        "date": "Jul–Sep 2000",
+        "title": "Camp David and the Second Intifada",
+        "categories": [
+          "diplomacy",
+          "terrorism"
+        ],
+        "body": "Arafat rejects Israel's Camp David offer without a counterproposal, and President Clinton later blames him, though US negotiator Robert Malley and others dispute that account. The Second Intifada erupts weeks later. The 2001 Mitchell Committee found no basis to conclude that the PA planned the violence in advance. Later evidence points the other way: Israeli documents seized in 2002 and statements by Marwan Barghouti, PA minister Imad Falouji and Suha Arafat point to Arafat directing and funding it. Over four years, Hamas, PIJ and Fatah's Al-Aqsa Martyrs' Brigades carry out more than 140 suicide bombings and thousands of shootings and ambushes. They kill more than 1,000 Israelis, over 700 of them civilians, and several thousand Palestinians die. In response, Israel builds the West Bank barrier, and attacks fall. The barrier's route through the West Bank is challenged in court: the International Court of Justice calls it unlawful in a 2004 advisory opinion, and Israel's Supreme Court orders sections rerouted."
+      },
+      {
+        "id": 38,
+        "eraId": "era-8",
+        "date": "Dec 2000–Jan 2001",
+        "title": "Clinton Parameters",
+        "categories": [
+          "diplomacy"
+        ],
+        "body": "President Clinton presents a final framework covering borders, Jerusalem, refugees and security. Israel's government accepts it with reservations on December 28. Arafat accepts it with reservations in early January. Clinton and his envoy Dennis Ross later say Israel's reservations fell within the framework and Arafat's fell outside it. Some analysts, such as Jeremy Pressman, dispute that reading."
+      },
+      {
+        "id": 39,
+        "eraId": "era-8",
+        "date": "Jan 27–28, 2001",
+        "title": "Taba Summit and Davos",
+        "categories": [
+          "diplomacy",
+          "propaganda"
+        ],
+        "body": "Despite experiencing ongoing terrorist attacks, Israel agrees to direct bilateral talks. At Taba the two sides narrow the gaps on borders, Jerusalem and refugees, and say they \"have never been closer.\" The next day, at the World Economic Forum in Davos, Arafat accuses Israel of a \"savage and barbaric war\" and calls its policy \"fascist.\" Nine days later, Ariel Sharon wins the Israeli election in a landslide."
+      },
+      {
+        "id": 40,
+        "eraId": "era-8",
+        "date": "Jan 2002",
+        "title": "Karine A",
+        "categories": [
+          "terrorism",
+          "propaganda"
+        ],
+        "body": "Israeli commandos seize the Karine A, a freighter bought by Palestinian Authority officials, in the Red Sea. It's carrying about 50 tons of weapons that Israel and the US say came from Iran. In 2009 an Israeli military court sentences Fuad Shubaki, Arafat's chief finance aide, to 20 years for his part in the smuggling."
+      },
+      {
+        "id": 41,
+        "eraId": "era-8",
+        "date": "Mar 27–28, 2002",
+        "title": "Arab Peace Initiative and the Passover massacre",
+        "categories": [
+          "diplomacy",
+          "terrorism"
+        ],
+        "body": "At a summit in Beirut, the Arab League adopts a Saudi plan offering normal relations with Israel in exchange for full withdrawal to the 1967 lines and a \"just solution\" for refugees. On the summit's opening day, a Hamas suicide bomber kills 30 people at a Passover seder at the Park Hotel in Netanya. Days later Israel launches Operation Defensive Shield in the West Bank."
+      },
+      {
+        "id": 42,
+        "eraId": "era-8",
+        "date": "2005–2007",
+        "title": "Gaza pullout and Hamas takeover",
+        "categories": [
+          "regional",
+          "terrorism"
+        ],
+        "body": "In 2005 Israel withdraws all its troops and about 9,000 citizens from Gaza. Rocket fire from Gaza rises after the withdrawal. Hamas wins the 2006 legislative elections and ousts Fatah by force in 2007. Gaza has held no elections since, and Israel and Egypt impose a blockade. Using diverted aid and materials, Hamas builds a 300-to-400-mile tunnel network costing about $1 billion. It runs under homes, hospitals, schools and mosques and shelters fighters and weapons."
+      },
+      {
+        "id": 43,
+        "eraId": "era-8",
+        "date": "Jun 2006",
+        "title": "Gilad Shalit abducted",
+        "categories": [
+          "terrorism"
+        ],
+        "body": "Hamas's Qassam Brigades, the Popular Resistance Committees and the Army of Islam tunnel out of Gaza near Kerem Shalom. They kill two Israeli soldiers and carry Corporal Gilad Shalit back into Gaza. Hamas holds him for more than five years. In October 2011 he's exchanged for 1,027 Palestinian prisoners, among them Yahya Sinwar, who later leads Hamas in Gaza and plans October 7."
+      },
+      {
+        "id": 44,
+        "eraId": "era-8",
+        "date": "Jul–Aug 2006",
+        "title": "Second Lebanon War",
+        "categories": [
+          "war",
+          "regional"
+        ],
+        "body": "Hezbollah raids northern Israel and abducts two soldiers, setting off a 34-day war of rocket fire and Israeli airstrikes. UN Security Council Resolution 1701 ends the war and bars any armed group other than the Lebanese army south of the Litani River. Hezbollah rearms there instead."
+      },
+      {
+        "id": 45,
+        "eraId": "era-8",
+        "date": "2008",
+        "title": "Olmert offer",
+        "categories": [
+          "diplomacy"
+        ],
+        "body": "Prime Minister Ehud Olmert offers PA President Abbas roughly 93.7% of the West Bank with 5.8% land swaps, a corridor connecting Gaza and the West Bank, and international oversight of Jerusalem's Holy Basin. Abbas makes no counteroffer. In a 2015 interview with Israel's Channel 10, he says, \"I rejected it out of hand,\" adding that he wasn't allowed to keep the map. Olmert has said Abbas \"never said no.\"",
+        "sources": [
+          {
+            "text": "Times of Israel, \"Abbas admits he rejected 2008 peace offer from Olmert\" (Nov 2015)",
+            "url": "https://www.timesofisrael.com/abbas-admits-he-rejected-2008-peace-offer-from-olmert/"
+          },
+          {
+            "text": "Times of Israel, \"Abbas never said no to 2008 peace deal, says former PM Olmert\"",
+            "url": "https://www.timesofisrael.com/abbas-never-said-no-to-2008-peace-deal-says-former-pm-olmert/"
+          }
+        ]
+      },
+      {
+        "id": 46,
+        "eraId": "era-9",
+        "date": "2008–2014",
+        "title": "Gaza wars",
+        "categories": [
+          "war",
+          "terrorism"
+        ],
+        "body": "Rising Hamas rocket fire and cross-border attack tunnels lead to three wars (2008–09, 2012, 2014). Rockets reach Tel Aviv and Jerusalem."
+      },
+      {
+        "id": 47,
+        "eraId": "era-9",
+        "date": "2015–2016",
+        "title": "\"Knife Intifada\"",
+        "categories": [
+          "terrorism",
+          "propaganda"
+        ],
+        "body": "Lone attackers, often spurred by social media, stab, shoot and ram cars into Israelis in Jerusalem and the West Bank."
+      },
+      {
+        "id": 48,
+        "eraId": "era-9",
+        "date": "2017",
+        "title": "Hamas policy document",
+        "categories": [
+          "diplomacy",
+          "propaganda"
+        ],
+        "body": "Hamas accepts a transitional state on the 1967 lines without recognizing Israel or dropping its claim to all of historic Palestine."
+      },
+      {
+        "id": 49,
+        "eraId": "era-9",
+        "date": "1990s–present",
+        "title": "Prisoner and \"martyr\" payments",
+        "categories": [
+          "terrorism",
+          "propaganda"
+        ],
+        "body": "For decades, the PA pays monthly stipends to jailed attackers and the families of slain ones. Prisoners get more the longer their sentence, so the heaviest sentences earn the most. In March 2018, the US Taylor Force Act cuts aid to the PA until it ends the system. Israel passes its own law the same year, holding back an equal amount from the tax revenue it collects for the PA. A February 2025 decree from Abbas moves the payments to a separate foundation (Tamkeen) and says they'll be based on financial need. An audit by the firm Alvarez & Marsal, commissioned by the PA, says that change has happened. Only a 12-page summary was released, and it flagged a batch of payments made under the old system in November 2025. The US State Department has called the reform a \"deception\" and says the payments continue in disguised forms."
+      },
+      {
+        "id": 50,
+        "eraId": "era-10",
+        "date": "2020",
+        "title": "Abraham Accords",
+        "categories": [
+          "diplomacy",
+          "regional"
+        ],
+        "body": "Israel normalizes relations with the UAE, Bahrain, Sudan and Morocco. They're the first Arab states to do so since Jordan in 1994. The PA calls the UAE deal a betrayal and recalls its ambassador."
+      },
+      {
+        "id": 51,
+        "eraId": "era-10",
+        "date": "Apr 2021",
+        "title": "PA cancels elections",
+        "categories": [
+          "diplomacy",
+          "regional"
+        ],
+        "body": "Abbas indefinitely postpones the first Palestinian legislative elections in 15 years, citing Israel's refusal to confirm voting in East Jerusalem. Polls at the time showed Fatah split into rival lists and Hamas gaining. Abbas, elected in January 2005 to a four-year term, had by then been in office for 16 years."
+      },
+      {
+        "id": 52,
+        "eraId": "era-10",
+        "date": "May 2021",
+        "title": "Gaza war and internal unrest",
+        "categories": [
+          "war",
+          "terrorism"
+        ],
+        "body": "Amid clashes over planned evictions in Sheikh Jarrah and police raids at al-Aqsa, Hamas issues an ultimatum and then fires rockets at Jerusalem. Over 11 days, Hamas and PIJ fire over 4,300 rockets at Israeli cities, while communal violence breaks out in mixed Arab-Jewish cities inside Israel."
+      },
+      {
+        "id": 53,
+        "eraId": "era-10",
+        "date": "Oct 7, 2023",
+        "title": "Massacre and Iran's \"Ring of Fire\"",
+        "categories": [
+          "terrorism",
+          "war",
+          "regional"
+        ],
+        "body": "Under rocket cover, Hamas-led gunmen breach the Gaza fence, kill about 1,200 people in southern Israel and take 251 hostages. In August 2024 a UN internal investigation finds that nine UNRWA staff \"may have been involved\" in the attack, and UNRWA fires them. Israel says it found a Hamas tunnel and server room beneath UNRWA's Gaza headquarters; UNRWA says it didn't know. A December 2023 poll by the Palestinian Center for Policy and Survey Research finds that 72% of Palestinians call the decision to attack \"correct.\" The pollster notes this doesn't mean support for every act committed that day, and the figure falls to about 53% by 2025. As Israel launches a campaign to destroy Hamas and free the hostages, Iran activates its regional \"Unity of the Arenas\" strategy: Hezbollah fires rockets and drones for over a year (displacing tens of thousands of Israelis from the north), Yemen's Houthis blockade Red Sea shipping, and Iran launches two direct ballistic missile and drone barrages against Israel in April and October 2024."
+      },
+      {
+        "id": 54,
+        "eraId": "era-10",
+        "date": "Oct 2023–2024",
+        "title": "Egypt seals Rafah",
+        "categories": [
+          "regional"
+        ],
+        "body": "Egypt refuses to admit Gaza refugees into Sinai, saying it won't take part in permanently displacing Palestinians. It fortifies the Rafah crossing with more walls, barbed wire, buffer zones and troops."
+      },
+      {
+        "id": 55,
+        "eraId": "era-10",
+        "date": "2023–2024",
+        "title": "Hamas on civilian deaths",
+        "categories": [
+          "propaganda"
+        ],
+        "body": "Public statements and reported messages from senior Hamas leadership regarding Palestinian civilian casualties and future attacks:",
+        "quotes": [
+          {
+            "text": "\"We need this blood\" of Gaza's women, children and elderly to awaken revolutionary spirit.",
+            "attribution": "Ismail Haniyeh"
+          },
+          {
+            "text": "The tunnels protect Hamas fighters, and protecting civilians is the job of the UN and Israel.",
+            "attribution": "Mousa Abu Marzouk",
+            "paraphrase": true
+          },
+          {
+            "text": "Vows to repeat October 7 \"again and again.\"",
+            "attribution": "Ghazi Hamad",
+            "paraphrase": true
+          },
+          {
+            "text": "Calls civilian deaths \"necessary sacrifices\" that increase pressure on Israel.",
+            "attribution": "Yahya Sinwar (in messages reported by the Wall Street Journal)",
+            "paraphrase": true
+          }
+        ]
+      }
+    ];
+
+  /* ---------- helpers ---------- */
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const norm = (s) => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/[–—]/g, '-');
+
+  // Highlight on the raw text, then escape each piece, so a search never matches inside HTML entities.
+  function hl(text, q) {
+    text = String(text);
+    if (!q) return esc(text);
+    const hay = norm(text), needle = norm(q);
+    let out = '', i = 0, j;
+    while ((j = hay.indexOf(needle, i)) !== -1) {
+      out += esc(text.slice(i, j)) + '<mark>' + esc(text.slice(j, j + needle.length)) + '</mark>';
+      i = j + needle.length;
+    }
+    return out + esc(text.slice(i));
+  }
+
+  const eraById = Object.fromEntries(ERAS.map((e) => [e.id, e]));
+  EVENTS.forEach((ev) => {
+    ev._hay = norm([ev.date, ev.title, ev.body, (ev.bullets || []).join(' '),
+      (ev.quotes || []).map((q) => q.text + ' ' + q.attribution).join(' '),
+      (ev.sources || []).map((s) => s.text || s).join(' '), eraById[ev.eraId].title].join(' '));
+  });
+
+  /* ---------- state (mirrored in the URL so views can be shared) ---------- */
+  const state = { cat: 'all', q: '' };
+  function readUrl() {
+    const p = new URLSearchParams(location.search);
+    state.cat = CAT_KEYS.includes(p.get('cat')) ? p.get('cat') : 'all';
+    state.q = p.get('q') || '';
+  }
+  function writeUrl() {
+    const p = new URLSearchParams();
+    if (state.cat !== 'all') p.set('cat', state.cat);
+    if (state.q.trim()) p.set('q', state.q.trim());
+    const qs = p.toString();
+    history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash);
+  }
+
+  const searchMatches = () => { const q = norm(state.q.trim()); return q ? EVENTS.filter((e) => e._hay.includes(q)) : EVENTS; };
+  const visible = (base) => state.cat === 'all' ? base : base.filter((e) => e.categories.includes(state.cat));
+
+  /* ---------- render ---------- */
+  function renderFilters(base) {
+    $('filters').innerHTML = CAT_KEYS.map((k) => {
+      const c = CATEGORIES[k];
+      const n = k === 'all' ? base.length : base.filter((e) => e.categories.includes(k)).length;
+      return `<button type="button" class="fbtn" data-cat="${k}" style="--c:${c.color}" aria-pressed="${state.cat === k}" ${n === 0 && state.cat !== k ? 'disabled' : ''}>
+        ${icon(k)}<span class="lbl-long">${c.label}</span><span class="lbl-short">${c.short}</span><span class="n">${n}</span></button>`;
+    }).join('');
+  }
+
+  function renderEras(list) {
+    const counts = {};
+    list.forEach((e) => { counts[e.eraId] = (counts[e.eraId] || 0) + 1; });
+    $('eras').innerHTML = ERAS.map((e) =>
+      `<button type="button" class="era" data-era="${e.id}" ${counts[e.id] ? '' : 'disabled'} title="${esc(e.title)}${counts[e.id] ? ' (' + counts[e.id] + ')' : ''}">${esc(e.short)}</button>`
+    ).join('');
+  }
+
+  function quoteHtml(q, query) {
+    const para = q.paraphrase;
+    return `<blockquote class="${para ? 'para' : ''}">
+      <p>${hl(q.text, query)}</p>
+      <footer>&mdash; ${hl(q.attribution, query)}${para ? '<span class="tag-para">paraphrase</span>' : ''}</footer>
+    </blockquote>`;
+  }
+
+  function sourceHtml(s) {
+    const text = typeof s === 'string' ? s : s.text;
+    const url = typeof s === 'string' ? '' : s.url;
+    return `<li>${url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(text)}</a>` : esc(text)}</li>`;
+  }
+
+  function cardHtml(ev, q) {
+    const primary = CATEGORIES[ev.categories[0]] || CATEGORIES.all;
+    const chips = ev.categories.map((k) =>
+      `<button type="button" class="chip" data-cat="${k}" style="--c:${CATEGORIES[k].color}" title="Show only ${esc(CATEGORIES[k].label)}">${icon(k)}${CATEGORIES[k].short}</button>`
+    ).join('');
+    return `<article class="ev" id="e${ev.id}">
+      <span class="node" style="background:${primary.color}" aria-hidden="true"></span>
+      <div class="card">
+        <div class="card-top">
+          <span class="date">${hl(ev.date, q)}</span>
+          <div class="chips">${chips}
+            <button type="button" class="icon-btn" data-link="${ev.id}" aria-label="Copy link to this entry" title="Copy link to this entry">${LINK_ICON}</button>
+          </div>
+        </div>
+        <h3>${hl(ev.title, q)}</h3>
+        <p class="body">${hl(ev.body, q)}</p>
+        ${ev.bullets ? `<ul class="bul">${ev.bullets.map((b) => `<li>${hl(b, q)}</li>`).join('')}</ul>` : ''}
+        ${ev.quotes ? `<div class="quotes">${ev.quotes.map((x) => quoteHtml(x, q)).join('')}</div>` : ''}
+        ${ev.sources && ev.sources.length ? `<details class="src"><summary>Sources (${ev.sources.length})</summary><ol>${ev.sources.map(sourceHtml).join('')}</ol></details>` : ''}
+      </div>
+    </article>`;
+  }
+
+  function render() {
+    const base = searchMatches();
+    const list = visible(base);
+    const q = state.q.trim();
+    renderFilters(base);
+    renderEras(list);
+    $('counter').textContent = list.length === EVENTS.length ? `${EVENTS.length} events` : `Showing ${list.length} of ${EVENTS.length}`;
+    $('clear').classList.toggle('show', !!state.q);
+    $('empty').hidden = list.length > 0;
+    $('timeline').innerHTML = ERAS.map((era) => {
+      const evs = list.filter((e) => e.eraId === era.id);
+      if (!evs.length) return '';
+      return `<section class="era-sec" id="${era.id}" data-era="${era.id}">
+        <div class="era-head"><h2>${esc(era.title)}</h2></div>
+        <div class="spine">${evs.map((e) => cardHtml(e, q)).join('')}</div>
+      </section>`;
+    }).join('');
+    writeUrl();
+    observeEras();
+  }
+
+  /* ---------- keep scroll position anchored on the clicked card when filters change ---------- */
+  function setCategory(cat, anchorEl) {
+    const anchorId = anchorEl && anchorEl.closest('article') ? anchorEl.closest('article').id : null;
+    const before = anchorId ? $(anchorId).getBoundingClientRect().top : null;
+    state.cat = cat;
+    render();
+    if (anchorId && $(anchorId)) {
+      const after = $(anchorId).getBoundingClientRect().top;
+      window.scrollBy({ top: after - before, behavior: 'instant' });
+    } else if (window.scrollY > $('bar').offsetTop) {
+      window.scrollTo({ top: $('bar').offsetTop, behavior: 'instant' });
+    }
+  }
+
+  /* ---------- current-era highlight ---------- */
+  let io;
+  function observeEras() {
+    if (io) io.disconnect();
+    if (!('IntersectionObserver' in window)) return;
+    io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (!en.isIntersecting) return;
+        const id = en.target.dataset.era;
+        document.querySelectorAll('.era').forEach((b) => b.classList.toggle('current', b.dataset.era === id));
+        const cur = document.querySelector('.era.current');
+        if (cur) cur.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      });
+    }, { rootMargin: `-${barHeight() + 10}px 0px -65% 0px` });
+    document.querySelectorAll('section.era-sec').forEach((s) => io.observe(s));
+  }
+  const barHeight = () => $('bar').offsetHeight;
+  function syncBarHeight() { document.documentElement.style.setProperty('--bar-h', barHeight() + 'px'); }
+
+  function toast(msg) {
+    const t = $('toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 1600);
+  }
+
+  function goToHash() {
+    const id = location.hash.slice(1);
+    if (!id) return;
+    let el = $(id);
+    if (!el && /^e\d+$/.test(id)) { state.cat = 'all'; state.q = ''; $('q').value = ''; render(); el = $(id); }
+    if (el) {
+      el.scrollIntoView({ block: 'start' });
+      if (el.classList.contains('ev')) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+    }
+  }
+
+  /* ---------- events (delegated, so re-rendering never stacks listeners) ---------- */
+  $('filters').addEventListener('click', (e) => { const b = e.target.closest('[data-cat]'); if (b) setCategory(b.dataset.cat); });
+  $('timeline').addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if (chip) { setCategory(state.cat === chip.dataset.cat ? 'all' : chip.dataset.cat, chip); return; }
+    const link = e.target.closest('[data-link]');
+    if (link) {
+      const url = location.origin + location.pathname + '#e' + link.dataset.link;
+      (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(
+        () => toast('Link copied'), () => { history.replaceState(null, '', '#e' + link.dataset.link); toast('Link is in the address bar'); });
+    }
+  });
+  $('eras').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-era]');
+    if (b && $(b.dataset.era)) $(b.dataset.era).scrollIntoView({ block: 'start' });
+  });
+  let typing;
+  $('q').addEventListener('input', (e) => { state.q = e.target.value; clearTimeout(typing); typing = setTimeout(render, 120); });
+  $('clear').addEventListener('click', () => { state.q = ''; $('q').value = ''; render(); $('q').focus(); });
+  $('reset').addEventListener('click', () => { state.cat = 'all'; state.q = ''; $('q').value = ''; render(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement !== $('q') && !e.ctrlKey && !e.metaKey) { e.preventDefault(); $('q').focus(); }
+    else if (e.key === 'Escape' && document.activeElement === $('q')) { $('clear').click(); $('q').blur(); }
+  });
+  window.addEventListener('scroll', () => $('totop').classList.toggle('show', window.scrollY > 600), { passive: true });
+  $('totop').addEventListener('click', () => window.scrollTo({ top: 0 }));
+  window.addEventListener('resize', syncBarHeight);
+  window.addEventListener('hashchange', goToHash);
+
+  readUrl();
+  $('q').value = state.q;
+  render();
+  syncBarHeight();
+  goToHash();
+})();
+</script>
+</body>
+</html>
