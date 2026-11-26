@@ -890,15 +890,27 @@
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const norm = (s) => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/[–—]/g, '-');
 
+  // Searches match at the start of a word ("terror" finds "terrorism", "plo" skips "deploy").
+  // An all-capitals search (PLO, UN, IRGC) is read as an acronym and matches whole words only.
+  function searchRe(q) {
+    q = String(q || '').trim();
+    if (!q) return null;
+    const acronym = /^[A-Z0-9]{2,}$/.test(q) && /[A-Z]/.test(q);
+    const needle = norm(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp('(?<![\\p{L}\\p{N}])' + needle + (acronym ? '(?![\\p{L}\\p{N}])' : ''), 'gu');
+  }
+
   // Highlight on the raw text, then escape each piece, so a search never matches inside HTML entities.
   function hl(text, q) {
     text = String(text);
-    if (!q) return esc(text);
-    const hay = norm(text), needle = norm(q);
-    let out = '', i = 0, j;
-    while ((j = hay.indexOf(needle, i)) !== -1) {
-      out += esc(text.slice(i, j)) + '<mark>' + esc(text.slice(j, j + needle.length)) + '</mark>';
-      i = j + needle.length;
+    const re = searchRe(q);
+    if (!re) return esc(text);
+    const hay = norm(text);
+    let out = '', i = 0, m;
+    while ((m = re.exec(hay)) !== null) {
+      const j = m.index, k = j + m[0].length;
+      out += esc(text.slice(i, j)) + '<mark>' + esc(text.slice(j, k)) + '</mark>';
+      i = k;
     }
     return out + esc(text.slice(i));
   }
@@ -926,7 +938,11 @@
     try { history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash); } catch (e) { /* ignore */ }
   }
 
-  const searchMatches = () => { const q = norm(state.q.trim()); return q ? EVENTS.filter((e) => e._hay.includes(q)) : EVENTS; };
+  const searchMatches = () => {
+    const re = searchRe(state.q);
+    if (!re) return EVENTS;
+    return EVENTS.filter((e) => { re.lastIndex = 0; return re.test(e._hay); });
+  };
   const visible = (base) => state.cat === 'all' ? base : base.filter((e) => e.categories.includes(state.cat));
 
   /* ---------- render ---------- */
