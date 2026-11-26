@@ -907,7 +907,7 @@
   EVENTS.forEach((ev) => {
     ev._hay = norm([ev.date, ev.title, ev.body, (ev.bullets || []).join(' '),
       (ev.quotes || []).map((q) => q.text + ' ' + q.attribution).join(' '),
-      (ev.sources || []).map((s) => s.text || s).join(' '), eraById[ev.eraId].title].join(' '));
+      (ev.sources || []).map((s) => s.text || s).join(' ')].join(' '));
   });
 
   /* ---------- state (mirrored in the URL so views can be shared) ---------- */
